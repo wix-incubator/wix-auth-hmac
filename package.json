@@ -1,0 +1,38 @@
+{
+  "name": "wix-auth-hmac",
+  "version": "1.0.0",
+  "description": "A Node library for signing URL's using HMAC signing for Wix projects",
+  "main": "src/WixAuth.js",
+  "homepage": "https://www.github.com/wix",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wix/wix-auth-hmac"
+  },
+  "dependencies": {
+    "crypto-js": "3.1.2-2",
+    "lodash-node": "2.4.1"
+  },
+  "devDependencies": {
+    "grunt": "0.4.4",
+    "grunt-contrib-clean": "0.5.0",
+    "grunt-jsdoc": "0.5.4",
+    "ink-docstrap": "latest",
+    "grunt-gh-pages": "latest",
+    "mocha": "latest",
+    "expect.js": "latest"
+  },
+  "engines": {
+    "node": ">= 0.10.20"
+  },
+  "keywords": [
+    "Wix"
+  ],
+  "author": "Wix <davidz@wix.com> (https://www.github.com/wix)",
+  "license": "Apache 2",
+  "bugs": {
+    "url": "https://github.com/wix/wix-auth-hmac/issues"
+  }
+}
