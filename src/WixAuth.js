@@ -16,7 +16,11 @@ function toBase64Safe(out, encoding) {
 	if (out instanceof Buffer) {
 		return toBase64Safe(out.toString((encoding !== undefined ? encoding : 'base64')));
 	}
-	return out.replace(/\+/g, '-').replace(/\//g, '_').replace('=', '')
+	return out.replace(/\+/g, '-').replace(/\//g, '_');
+}
+
+function removeBase64Padding(b64) {
+	return b64.replace('=', '')
 }
 
 function WixPaths() {
@@ -94,11 +98,12 @@ var Algorithms = {
 	"SHA1" : new Scheme("sha1")
 };
 
-var OPTIONS = {
+var Options = {
 	WITH_PARAM_VALUES : "withParameterValues",
 	PATH_PRIORITY : "pathPriority",
 	HMAC_SCHEMA : "hmacSchema",
 	WEBSAFE_B64 : "websafeBase64",
+	PAD_B64 : "padB64",
 	TRAILING_NEWLINE : "trailingNewline"
 }
 
@@ -115,28 +120,32 @@ function HMACAuthRequest(url, verb, path, secretKey, options) {
 	this.path = path;
 	this.postData = null;
 	this.url = url;
-	this.options(OPTIONS.WITH_PARAM_VALUES, initFromOptions(options, OPTIONS.WITH_PARAM_VALUES, false));
-	this.options(OPTIONS.PATH_PRIORITY, initFromOptions(options, OPTIONS.PATH_PRIORITY, true));
-	this.options(OPTIONS.HMAC_SCHEMA, initFromOptions(options, OPTIONS.HMAC_SCHEMA, Algorithms.SHA256));
-	this.options(OPTIONS.WEBSAFE_B64, initFromOptions(options, OPTIONS.WEBSAFE_B64, true));
-	this.options(OPTIONS.TRAILING_NEWLINE, initFromOptions(options, OPTIONS.TRAILING_NEWLINE, false));
+	this.options(Options.WITH_PARAM_VALUES, initFromOptions(options, Options.WITH_PARAM_VALUES, false));
+	this.options(Options.PATH_PRIORITY, initFromOptions(options, Options.PATH_PRIORITY, true));
+	this.options(Options.HMAC_SCHEMA, initFromOptions(options, Options.HMAC_SCHEMA, Algorithms.SHA256));
+	this.options(Options.WEBSAFE_B64, initFromOptions(options, Options.WEBSAFE_B64, true));
+	this.options(Options.TRAILING_NEWLINE, initFromOptions(options, Options.TRAILING_NEWLINE, false));
+	this.options(Options.PAD_B64, initFromOptions(options, Options.PAD_B64, false));
+
 }
 
 HMACAuthRequest.prototype = {
 	options : function(key, value) {
-		if(key === OPTIONS.HMAC_SCHEMA) {
+		if(key === Options.HMAC_SCHEMA) {
 			if(!(value instanceof Scheme)) {
 				throw "Bad HMAC scheme";
 			}
 			this.cryptMode = value;
-		} else if(key === OPTIONS.WITH_PARAM_VALUES) {
+		} else if(key === Options.WITH_PARAM_VALUES) {
 			this.withValues = value;
-		} else if(key === OPTIONS.PATH_PRIORITY) {
+		} else if(key === Options.PATH_PRIORITY) {
 			this.pathFirst = value;
-		} else if(key === OPTIONS.WEBSAFE_B64) {
+		} else if(key === Options.WEBSAFE_B64) {
 			this.sanitizeB64 = value;
-		}  else if(key === OPTIONS.TRAILING_NEWLINE) {
+		}  else if(key === Options.TRAILING_NEWLINE) {
 			this.trailingNewline = value;
+		} else if(key === Options.PAD_B64) {
+			this.padB64Output = value;
 		}
 		return this;
 	},
@@ -222,7 +231,11 @@ HMACAuthRequest.prototype = {
 		if(this.trailingNewline) {
 			out += "\n";
 		}
-		return signData(this.cryptMode, this.key, out, this.sanitizeB64);
+		var sig = signData(this.cryptMode, this.key, out, this.sanitizeB64);
+		if(!this.padB64Output) {
+			sig = removeBase64Padding(sig);
+		}
+		return sig;
 	},
 	toRequestAuth : function(signature) {
 		return signature;
@@ -256,5 +269,5 @@ module.exports = {
 		signData : signData
 	},
 	Algorithms : Algorithms,
-	Options : OPTIONS
+	Options : Options
 };
