@@ -31,7 +31,7 @@
     "Wix"
   ],
   "author": "Wix <davidz@wix.com> (https://www.github.com/wix)",
-  "license": "Apache 2",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/wix/wix-auth-hmac/issues"
   }
