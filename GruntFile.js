@@ -3,12 +3,12 @@ module.exports = function(grunt) {
     grunt.initConfig({
         jsdoc : {
             dist : {
-                src: ['lib/*.js', 'README.md'],
+                src: ['src/*.js', 'README.md'],
                 options: {
                     destination: 'docs',
                     private : false,
                     configure: 'jsdoc.conf.json',
-                    template: 'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template'
+                    template: 'node_modules/ink-docstrap/template'
                 }
             }
         },
