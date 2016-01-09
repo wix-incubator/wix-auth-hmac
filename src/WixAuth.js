@@ -5,7 +5,7 @@
 
 var crypto = require('crypto');
 var urlLib = require('url');
-var _ = require('lodash-node');
+var _ = require('lodash');
 
 function signData(mode, key, data, sanitize) {
 	var hmac = crypto.createHmac(mode.value(), key);
