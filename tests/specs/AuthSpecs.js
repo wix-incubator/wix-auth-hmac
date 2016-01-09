@@ -37,6 +37,7 @@ describe('Test Wix Media Services', function () {
 		var r = new WixAuth.HMACAuthRequest("http://test.com", "GET", "/api/v1/test", "123456789");
 		var options = r.asHeaders("x-test-")
 			.options(WixAuth.Options.WEBSAFE_B64, false)
+            .options(WixAuth.Options.PAD_B64, true)
 			.withHeader("x-test-1", "1")
 			.withHeader("x-test-2", "2")
 			.withHeader("x-test-3", "3")
@@ -54,6 +55,7 @@ describe('Test Wix Media Services', function () {
 		var options = r.asHeaders("x-test-")
 			.options(WixAuth.Options.WITH_PARAM_VALUES, true)
 			.options(WixAuth.Options.WEBSAFE_B64, false)
+            .options(WixAuth.Options.PAD_B64, true)
 			.withHeader("x-test-1", "1")
 			.withHeader("x-test-2", "2")
 			.withHeader("x-test-3", "3")
